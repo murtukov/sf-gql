@@ -1,0 +1,20 @@
+overblog_graphql:
+    definitions:
+        schema:
+            query: Query
+        mappings:
+            types:
+                -
+                    type: yaml
+                    dir: "%kernel.project_dir%/config/graphql/types"
+                    suffix: null
+    services:
+        promise_adapter: "webonyx_graphql.sync_promise_adapter"
+
+overblog_dataloader:
+    defaults:
+        promise_adapter: "overblog_dataloader.webonyx_graphql_sync_promise_adapter"
+
+services:
+    Overblog\PromiseAdapter\PromiseAdapterInterface:
+        class: Overblog\PromiseAdapter\Adapter\WebonyxGraphQLSyncPromiseAdapter

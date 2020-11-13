@@ -1,0 +1,7 @@
+Query:
+    type: object
+    config:
+        fields:
+            users:
+                type: "[User]"
+                resolve: '@=resolver("user/findAll")'

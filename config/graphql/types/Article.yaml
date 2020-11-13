@@ -1,0 +1,7 @@
+Article:
+    type: object
+    config:
+        fields:
+            id: Int
+            title: String
+            author: User
