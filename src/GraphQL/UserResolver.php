@@ -2,30 +2,32 @@
 
 namespace App\GraphQL;
 
-use App\Entity\User;
 use App\Repository\UserRepository;
+use GraphQL\Type\Definition\ResolveInfo;
 use Overblog\GraphQLBundle\Definition\Resolver\AliasedInterface;
 use Overblog\GraphQLBundle\Definition\Resolver\ResolverInterface;
 
 class UserResolver implements ResolverInterface, AliasedInterface
 {
     private UserRepository $userRepository;
-    private ArticleDataloader $articleDataloader;
 
-    public function __construct(UserRepository $userRepository, ArticleDataloader $articleDataloader)
+    public function __construct(UserRepository $userRepository)
     {
         $this->userRepository = $userRepository;
-        $this->articleDataloader = $articleDataloader;
     }
 
-    public function findAll()
+    public function findAll(ResolveInfo $info)
     {
-        return $this->userRepository->findAll();
-    }
+        $selectedFields = $info->getFieldSelection(1);
+        $query = $this->userRepository->createQueryBuilder('u');
 
-    public function articles(User $user)
-    {
-        return $this->articleDataloader->loadMany($user->getArticles());
+        if (isset($selectedFields['articles'])) {
+            $query
+                ->leftJoin('u.articles', 'a')
+                ->addSelect('a');
+        }
+
+        return $query->getQuery()->getResult();
     }
 
     public static function getAliases(): array

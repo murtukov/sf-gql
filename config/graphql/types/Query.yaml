@@ -4,4 +4,4 @@ Query:
         fields:
             users:
                 type: "[User]"
-                resolve: '@=resolver("user/findAll")'
+                resolve: '@=resolver("user/findAll", [info])'
